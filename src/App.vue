@@ -1,18 +1,24 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <QuestionView></QuestionView>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import QuestionView from "./components/QuestionView.vue";
+// import MiniAppPostOverlay  from "./components/MiniAppPostOverlay"
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    QuestionView
+    // MiniAppPostOverlay
   }
+  // ,
+  // data: () => {
+  //   return {
+  //
+  //   }
+  // }
 }
 </script>
 
