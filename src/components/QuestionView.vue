@@ -52,16 +52,6 @@ import wx from "weixin-js-sdk";
 const moment = require("moment");
 const axios = require("axios");
 
-let isTabActive = true;
-
-window.onfocus = function () {
-  isTabActive = true;
-};
-
-window.onblur = function () {
-  isTabActive = false;
-};
-
 export default {
   name: "QuestionOverview",
   props: {},
@@ -71,6 +61,7 @@ export default {
       posts: null,
       moment: moment,
       overlay: false,
+      isTabActive: true
     };
   },
   async mounted() {
@@ -79,7 +70,16 @@ export default {
     this.getPosts();
     setInterval(() => {
       this.requestLoop();
-    }, 8000);
+    }, 10000);
+
+    window.onfocus =  () => {
+      this.isTabActive = true;
+      this.getPosts();
+    };
+
+    window.onblur =  () => {
+      this.isTabActive = false;
+    };
   },
   methods: {
     getPosts() {
@@ -133,7 +133,7 @@ export default {
       console.log("+1");
     },
     requestLoop() {
-      if (isTabActive) {
+      if (this.isTabActive) {
         if (!this.userid) {
           window.location = window.location.origin + "?user=##ifanrid##";
         }
