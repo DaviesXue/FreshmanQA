@@ -32,7 +32,12 @@
           class="askDetails"
           style="font-size: small; flex-grow:1;text-align:left;"
         >{{post.user}} 发布于 {{ moment(moment.unix(post.created_at).format("YYYY-MM-DD HH:mm:ss")).locale('zh-cn').fromNow() }}</div>
-        <button type="button" class="btn" @click="voteQuestion(post.post_id)">我也想问 ({{post.likes}})</button>
+        <button
+          type="button"
+          class="btn"
+          @click="voteQuestion(post.post_id)"
+          :class="{disabled:!userid}"
+        >我也想问 ({{post.likes}})</button>
         <br />
       </div>
     </div>
@@ -59,7 +64,7 @@ export default {
   },
   async mounted() {
     // this.userid = -1;
-    getQueryParams("user");
+    this.userid = getQueryParams("user");
     this.getPosts();
   },
   methods: {
@@ -73,12 +78,16 @@ export default {
     },
     voteQuestion(post_id) {
       console.log(post_id, this.userid);
-      axios
-        .post("https://uclcssa.cn/post/postLikeEndpoint.php", {
-          postid: post_id,
-          userid: this.userid,
-          auth: "uclcssa2020",
-        })
+      const params = new URLSearchParams();
+      params.append("postid", post_id);
+      params.append("userid", this.userid);
+      params.append("auth", "uclcssa2020");
+      const options = {
+        method: "POST",
+        data: params,
+        url: "https://uclcssa.cn/post/postLikeEndpoint.php",
+      };
+      axios(options)
         .then((response) => {
           console.log(response.data);
           this.getPosts();
@@ -113,7 +122,6 @@ export default {
 // ref https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters
 function getQueryParams(name) {
   const url = location.href;
-  name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
   const regexS = "[\\?&]" + name + "=([^&#]*)";
   const regex = new RegExp(regexS);
   const results = regex.exec(url);
@@ -203,5 +211,10 @@ a {
   line-height: 60px;
   font-size: 30px;
   box-shadow: 0px 5px 20px -2px rgba(255, 0, 0, 0.2);
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>
