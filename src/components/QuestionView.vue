@@ -6,16 +6,16 @@
               src="https://vignette.wikia.nocookie.net/itb/images/d/d2/B_avatar.png/revision/latest?cb=20180311210200"
               mode="cover"
       />
-      <div class="publish-textarea">
+      <div class="publish-textarea" @click="goToCommunity()">
         <div class="publish-text">分享活动，问答，交易，新鲜事...</div>
       </div>
       <img
               style="width:25px;height:25px;margin-right:10px;top:5px;opacity:0.5;margin:0"
               src="https://img.icons8.com/small/48/000000/filled-sent.png"
-              @click="overlay = !overlay"
+              @click="goToPublish()"
       />
     </div>
-    <div class="mBlock" v-for="post in posts" :key="post.likes" @click="overlay = !overlay">
+    <div class="mBlock" v-for="post in posts" :key="post.likes" @click="goToPost(post.post_id)">
       <div
               v-if="post.title"
               class="title"
@@ -33,10 +33,6 @@
         >{{post.user}} 发布于 {{ moment(moment.unix(post.created_at).format("YYYY-MM-DD HH:mm:ss")).locale('zh-cn').fromNow() }}</div>
         <button type="button" class="btn" @click="voteQuestion(post.post_id)">我也想问 ({{post.likes}})</button>
         <br />
-        <v-overlay :value="overlay">
-          <div><img src="../../public/logo.jpg" ></div>
-          请进入学联小程序提问或查看详情
-        </v-overlay>
       </div>
     </div>
   </div>
@@ -44,7 +40,7 @@
 
 <script>
 
-  import Vuetify from "vuetify";
+  import wx from "weixin-js-sdk";
 
   const moment = require("moment");
   const axios = require("axios");
@@ -54,7 +50,6 @@
   export default {
     name: "QuestionOverview",
     props: {},
-    vuetify: new Vuetify(),
     data: function () {
       return {
         userid: null,
@@ -89,7 +84,30 @@
                 })
                 .catch((error) => console.log(error));
       },
-    }
+      goToCommunity(){
+        wx.miniProgram.switchTab({
+          url:'/pages/discover/discover'
+        });
+        window.ga('send', 'event', "mini-app", "go-to-community", "");
+      },
+      goToPublish(){
+        wx.miniProgram.navigateTo({
+          url:'/pages/publish/publish?space_id=14'
+        });
+        window.ga('send', 'event', "mini-app", "go-to-publish", "");
+      },
+      goToPost(id){
+        wx.miniProgram.navigateTo({
+          url:'/pages/moments/detail?id='+id
+        });
+        window.ga('send', 'event', "mini-app", "go-to-post", id);
+      },
+      dummy() {
+        console.log("+1")
+      }
+    },
+
+
   };
 
   // ref https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters

@@ -2,7 +2,7 @@
 <template>
     <div class="ma-overlay" v-if="posts">
         <div class="title_bg" :class="{'hidden-title': !showMore}">
-            <div :style="{color: showMore?'black':'white'}">❤️学联社区疫情互助讨论</div>
+            <div :style="{color: showMore?'black':'white'}">新生问答专区</div>
             <div style="color: #007BFF" @click="showMore = !showMore"><MoreIcon v-if="showMore"/><LessIcon v-else/>{{showMore?'隐藏':'打开'}}</div>
         </div>
         <div v-if="showMore">
