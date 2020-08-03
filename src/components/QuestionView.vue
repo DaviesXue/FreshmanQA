@@ -62,7 +62,7 @@ export default {
       posts: null,
       moment: moment,
       overlay: false,
-      isTabActive: true
+      isTabActive: true,
     };
   },
   async mounted() {
@@ -74,22 +74,22 @@ export default {
       this.requestLoop();
     }, 10000);
 
-    window.onfocus =  () => {
+    window.onfocus = () => {
       this.isTabActive = true;
       this.requestLoop();
     };
 
-    window.onblur =  () => {
+    window.onblur = () => {
       this.isTabActive = false;
     };
   },
   methods: {
     getPosts() {
       console.log("fetching");
-      fetch(
-        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14&userid=" +
-          this.userid
-      ).then(async (res) => {
+      const url =
+        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14" +
+        (this.userid ? "&userid=" + this.userid : "");
+      fetch(url).then(async (res) => {
         let data = await res.json();
         this.posts = data.posts;
       });
@@ -137,7 +137,7 @@ export default {
     requestLoop() {
       if (this.isTabActive) {
         if (!this.userid) {
-          window.location = window.location.origin + window.location.pathname + "?user=##ifanrid##&rand=" + Math.random();
+          window.location.href = window.location.origin + window.location.pathname + "?user=##ifanrid##&rand=" + Math.random();
         }
         this.getPosts();
       }
