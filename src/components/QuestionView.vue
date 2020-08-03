@@ -14,6 +14,7 @@
         src="https://img.icons8.com/small/48/000000/filled-sent.png"
       />
     </div>
+    <div class="mBlock" v-if="!posts" style="text-align:center;">载入中，请稍等...</div>
     <div class="mBlock" v-for="post in posts" :key="post.likes">
       <div @click="goToPost(post.post_id)">
         <div
@@ -67,14 +68,15 @@ export default {
   async mounted() {
     // this.userid = -1;
     this.userid = getQueryParams("user");
-    this.getPosts();
+    this.requestLoop();
+
     setInterval(() => {
       this.requestLoop();
     }, 10000);
 
     window.onfocus =  () => {
       this.isTabActive = true;
-      this.getPosts();
+      this.requestLoop();
     };
 
     window.onblur =  () => {
@@ -135,7 +137,7 @@ export default {
     requestLoop() {
       if (this.isTabActive) {
         if (!this.userid) {
-          window.location = window.location.origin + "?user=##ifanrid##";
+          window.location = window.location.origin + window.location.pathname + "?user=##ifanrid##&rand=" + Math.random();
         }
         this.getPosts();
       }
