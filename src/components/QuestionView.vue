@@ -5,7 +5,7 @@
         class="post-avatar"
         src="http://studentsunionucl.org/sites/uclu.org/files/csc-directory-images/cssa_short.jpg"
         mode="cover"
-        :class="{disabled:!userid}"
+        :class="{disabled:!userid || userid=='null'}"
       />
       <div class="publish-textarea">
         <div class="publish-text">分享你有关UCL的任何问题...</div>
@@ -136,9 +136,9 @@ export default {
       console.log("+1");
     },
     requestLoop() {
-      if (this.isTabActive || !this.userid || !this.posts) {
-        if (!this.userid) {
-          window.location.href = window.location.origin + window.location.pathname + "?user=##ifanrid##&rand=" + Math.random();
+      if (this.isTabActive || !this.userid || this.userid=='null' || !this.posts) {
+        if (!this.userid || this.userid=='null') {
+          window.location.replace(window.location.origin + window.location.pathname + "?user=##ifanrid##&rand=" + Math.random());
         }
         this.getPosts();
       }
