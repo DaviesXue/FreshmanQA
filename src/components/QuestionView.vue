@@ -3,7 +3,7 @@
     <div class="mBlock publish" @click="goToPublish()">
       <img
         class="post-avatar"
-        src="https://vignette.wikia.nocookie.net/itb/images/d/d2/B_avatar.png/revision/latest?cb=20180311210200"
+        src="http://studentsunionucl.org/sites/uclu.org/files/csc-directory-images/cssa_short.jpg"
         mode="cover"
       />
       <div class="publish-textarea">
@@ -36,7 +36,7 @@
           type="button"
           class="btn"
           @click="voteQuestion(post.post_id)"
-          :class="{disabled:!userid}"
+          :class="{disabled:!userid || post.liked}"
         >我也想问 ({{post.likes}})</button>
         <br />
       </div>
@@ -51,6 +51,17 @@ import wx from "weixin-js-sdk";
 
 const moment = require("moment");
 const axios = require("axios");
+
+let isTabActive = true;
+
+window.onfocus = function () {
+  isTabActive = true;
+};
+
+window.onblur = function () {
+  isTabActive = false;
+};
+
 export default {
   name: "QuestionOverview",
   props: {},
@@ -66,11 +77,16 @@ export default {
     // this.userid = -1;
     this.userid = getQueryParams("user");
     this.getPosts();
+    setInterval(() => {
+      this.requestLoop();
+    }, 8000);
   },
   methods: {
     getPosts() {
+      console.log("fetching");
       fetch(
-        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14"
+        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14&userid=" +
+          this.userid
       ).then(async (res) => {
         let data = await res.json();
         this.posts = data.posts;
@@ -115,6 +131,14 @@ export default {
     },
     dummy() {
       console.log("+1");
+    },
+    requestLoop() {
+      if (isTabActive) {
+        if (!this.userid) {
+          window.location = window.location.origin + "?user=##ifanrid##";
+        }
+        this.getPosts();
+      }
     },
   },
 };
