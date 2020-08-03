@@ -2,19 +2,16 @@
     <div id="app">
         <img src="header.png" class="header">
         <QuestionView></QuestionView>
-        <MiniAppPostOverlay></MiniAppPostOverlay>
     </div>
 </template>
 
 <script>
   import QuestionView from "./components/QuestionView.vue";
-  import MiniAppPostOverlay from "./components/MiniAppPostOverlay";
 
   export default {
     name: 'App',
     components: {
-        QuestionView,
-        MiniAppPostOverlay
+        QuestionView
     }
   }
 </script>
