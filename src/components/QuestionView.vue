@@ -15,6 +15,12 @@
         src="https://img.icons8.com/small/48/000000/filled-sent.png"
       />
     </div>
+    <div class="publish" style="padding:0">
+      <div class="buttons" @click="getPosts">刷新</div>
+      <div style="flex-grow:1"></div>
+      <div class="buttons" @click="sort('created_at')">按时间排序</div>
+      <div class="buttons" @click="sort('likes')">按热度排序</div>
+    </div>
     <div class="mBlock" v-if="!posts" style="text-align:center;">载入中，请稍等...</div>
     <div class="mBlock" v-for="post in posts" :key="post.id">
       <div @click="goToPost(post.post_id)">
@@ -64,6 +70,7 @@ export default {
       moment: moment,
       overlay: false,
       isTabActive: true,
+      sortBy: "created_at"
     };
   },
   async mounted() {
@@ -85,14 +92,20 @@ export default {
     };
   },
   methods: {
+    async sort(sortBy){
+      if(sortBy) this.sortBy = sortBy;
+      this.posts.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
+    },
     getPosts() {
       console.log("fetching");
       const url =
-        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14&count=100" +
+        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14&count=100&orderBy=created_at" +
         (this.userid ? "&userid=" + this.userid : "");
       fetch(url).then(async (res) => {
         let data = await res.json();
+        console.log("fetched", data);
         this.posts = data.posts;
+        this.sort()
       });
     },
     voteQuestion(post_id) {
@@ -243,5 +256,14 @@ a {
 .disabled {
   pointer-events: none;
   opacity: 0.5;
+}
+
+.buttons{
+  font-size: smaller;
+  padding: 6px 10px;
+  background: white;
+  box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.1);
+  margin: 0 10px;
+  border-radius: 10px;
 }
 </style>
