@@ -45,7 +45,7 @@
           type="button"
           class="btn"
           @click="voteQuestion(post.post_id)"
-          :class="{disabled:!userid || post.liked}"
+          :class="{disabled: post.liked}"
         >我也想问 ({{post.likes}})</button>
         <br />
       </div>
@@ -115,6 +115,11 @@ export default {
       });
     },
     voteQuestion(post_id) {
+      if(!this.userid){
+        window.ga("send", "event", "not-loggedin-liked", "not-loggedin", this.userid);
+        alert("请点击‘我的UCL’登录后返回即可为此问题投票");
+        return;
+      }
       console.log(post_id, this.userid);
       const params = new URLSearchParams();
       params.append("postid", post_id);
@@ -131,6 +136,7 @@ export default {
           this.getPosts();
         })
         .catch((error) => console.log(error));
+      window.ga("send", "event", "liked", "liked", this.userid);
     },
     goToCommunity() {
       wx.miniProgram.switchTab({
