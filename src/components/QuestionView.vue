@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-bottom:150px">
     <div class="mBlock publish" @click="goToPublish()">
       <img
         class="post-avatar"
@@ -88,7 +88,7 @@ export default {
     getPosts() {
       console.log("fetching");
       const url =
-        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14" +
+        "https://uclcssa.cn/post/getPostEndpoint.php?auth=ucl&space=14&count=100" +
         (this.userid ? "&userid=" + this.userid : "");
       fetch(url).then(async (res) => {
         let data = await res.json();
