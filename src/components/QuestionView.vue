@@ -16,7 +16,8 @@
       />
     </div>
     <div class="publish" style="padding:0">
-      <div class="buttons" @click="getPosts">刷新</div>
+      <div class="buttons" v-if="!isLive" @click="getPosts">刷新</div>
+      <div class="buttons live" v-else>🔴 实时 Live</div>
       <div style="flex-grow:1"></div>
       <div class="buttons" @click="sort('created_at')">按时间排序</div>
       <div class="buttons" @click="sort('likes')">按热度排序</div>
@@ -70,7 +71,8 @@ export default {
       moment: moment,
       overlay: false,
       isTabActive: true,
-      sortBy: "created_at"
+      sortBy: "created_at",
+      isLive: false
     };
   },
   async mounted() {
@@ -80,7 +82,7 @@ export default {
 
     setInterval(() => {
       this.requestLoop();
-    }, 10000);
+    }, 20000);
 
     window.onfocus = () => {
       this.isTabActive = true;
@@ -106,6 +108,10 @@ export default {
         console.log("fetched", data);
         this.posts = data.posts;
         this.sort()
+        this.isLive = true;
+        setTimeout(()=>{
+          this.isLive = false
+        }, 8000)
       });
     },
     voteQuestion(post_id) {
@@ -265,5 +271,18 @@ a {
   box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.1);
   margin: 0 10px;
   border-radius: 10px;
+}
+
+.live{
+  font-weight: bolder;
+  color:red;
+  padding: 4px 10px;
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.2;
+  }
 }
 </style>
