@@ -16,7 +16,7 @@
       />
     </div>
     <div class="mBlock" v-if="!posts" style="text-align:center;">载入中，请稍等...</div>
-    <div class="mBlock" v-for="post in posts" :key="post.likes">
+    <div class="mBlock" v-for="post in posts" :key="post.id">
       <div @click="goToPost(post.post_id)">
         <div
           v-if="post.title"
@@ -26,8 +26,8 @@
         <div
           v-if="post.content"
           class="content"
-          style="text-align: left; font-size: smaller"
-        >{{post.content.slice(0, 30)}}...</div>
+          style="text-align: left; "
+        >{{post.content.slice(0, 60)}}{{post.content.length >= 60 ? "..." : ""}}</div>
       </div>
       <div class="ask-wraper">
         <div
