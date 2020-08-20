@@ -15,6 +15,10 @@
         src="https://img.icons8.com/small/48/000000/filled-sent.png"
       />
     </div>
+
+    <img src="sponsors/sponsors.png" class="sponsor" @click="showSponsor=true" />
+    <Sponsor v-if="showSponsor" @hide="showSponsor=false"></Sponsor>
+
     <div class="publish" style="padding:0">
       <div class="buttons" v-if="!isLive" @click="getPosts">刷新</div>
       <div class="buttons live" v-else>🔴 实时 Live</div>
@@ -57,6 +61,7 @@
 
 <script>
 import wx from "weixin-js-sdk";
+import Sponsor from "./Sponsor.vue";
 
 const moment = require("moment");
 const axios = require("axios");
@@ -72,8 +77,12 @@ export default {
       overlay: false,
       isTabActive: true,
       sortBy: "created_at",
-      isLive: false
+      isLive: false,
+      showSponsor: false,
     };
+  },
+  components: {
+    Sponsor,
   },
   async mounted() {
     // this.userid = -1;
@@ -94,8 +103,8 @@ export default {
     };
   },
   methods: {
-    async sort(sortBy){
-      if(sortBy) this.sortBy = sortBy;
+    async sort(sortBy) {
+      if (sortBy) this.sortBy = sortBy;
       this.posts.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
     },
     getPosts() {
@@ -107,16 +116,22 @@ export default {
         let data = await res.json();
         console.log("fetched", data);
         this.posts = data.posts;
-        this.sort()
+        this.sort();
         this.isLive = true;
-        setTimeout(()=>{
-          this.isLive = false
-        }, 8000)
+        setTimeout(() => {
+          this.isLive = false;
+        }, 8000);
       });
     },
     voteQuestion(post_id) {
-      if(!this.userid){
-        window.ga("send", "event", "not-loggedin-liked", "not-loggedin", this.userid);
+      if (!this.userid) {
+        window.ga(
+          "send",
+          "event",
+          "not-loggedin-liked",
+          "not-loggedin",
+          this.userid
+        );
         alert("请点击‘我的UCL’登录后返回即可为此问题投票");
         return;
       }
@@ -161,9 +176,19 @@ export default {
       console.log("+1");
     },
     requestLoop() {
-      if (this.isTabActive || !this.userid || this.userid=='null' || !this.posts) {
-        if (!this.userid || this.userid=='null') {
-          window.location.replace(window.location.origin + window.location.pathname + "?user=##ifanrid##&rand=" + Math.random());
+      if (
+        this.isTabActive ||
+        !this.userid ||
+        this.userid == "null" ||
+        !this.posts
+      ) {
+        if (!this.userid || this.userid == "null") {
+          window.location.replace(
+            window.location.origin +
+              window.location.pathname +
+              "?user=##ifanrid##&rand=" +
+              Math.random()
+          );
         }
         this.getPosts();
       }
@@ -270,7 +295,7 @@ a {
   opacity: 0.5;
 }
 
-.buttons{
+.buttons {
   font-size: smaller;
   padding: 6px 10px;
   background: white;
@@ -279,11 +304,19 @@ a {
   border-radius: 10px;
 }
 
-.live{
+.live {
   font-weight: bolder;
-  color:red;
+  color: red;
   padding: 4px 10px;
   animation: blinker 2s linear infinite;
+}
+
+.sponsor {
+  box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 @keyframes blinker {
