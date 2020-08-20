@@ -48,7 +48,7 @@
         <button
           type="button"
           class="btn"
-          @click="voteQuestion(post.post_id)"
+          @click="voteQuestion(post)"
           :class="{disabled: post.liked}"
         >我也想问 ({{post.likes}})</button>
         <br />
@@ -123,7 +123,8 @@ export default {
         }, 8000);
       });
     },
-    voteQuestion(post_id) {
+    voteQuestion(post) {
+      console.log(post.post_id, this.userid);
       if (!this.userid) {
         window.ga(
           "send",
@@ -135,9 +136,9 @@ export default {
         alert("请点击‘我的UCL’登录后返回即可为此问题投票");
         return;
       }
-      console.log(post_id, this.userid);
+      post.liked = true;
       const params = new URLSearchParams();
-      params.append("postid", post_id);
+      params.append("postid", post.post_id);
       params.append("userid", this.userid);
       params.append("auth", "uclcssa2020");
       const options = {
@@ -151,7 +152,13 @@ export default {
           this.getPosts();
         })
         .catch((error) => console.log(error));
-      window.ga("send", "event", "liked", "liked", this.userid);
+      window.ga(
+        "send",
+        "event",
+        "liked",
+        "liked",
+        post.post_id + "-" + this.userid
+      );
     },
     goToCommunity() {
       wx.miniProgram.switchTab({
